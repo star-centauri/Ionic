@@ -29,11 +29,9 @@ angular.module('starter', ['ionic', 'ngCordova'])
     var options = {limit: 1, duration: 1};
 
     $cordovaCapture.captureVideo(options).then(function(videoData){
-      console.log('video data: ' + angular.toJson(data));
-    },function(error){
-      console.log('video error: ' + angular.toJson(data));
+    },function(err){
+
     });
   };
 });
-
 
