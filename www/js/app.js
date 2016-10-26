@@ -3,9 +3,11 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
+// var db = null;
+
 angular.module('starter', ['ionic', 'ngCordova'])
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform /*, $cordovaSQLite */) {
   $ionicPlatform.ready(function() {
     if(window.cordova && window.cordova.plugins.Keyboard) {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -20,6 +22,7 @@ angular.module('starter', ['ionic', 'ngCordova'])
     if(window.StatusBar) {
       StatusBar.styleDefault();
     }
+    // db = $cordovaSQLite.openDB({nome:"my.db"});
   });
 })
 
@@ -34,4 +37,26 @@ angular.module('starter', ['ionic', 'ngCordova'])
     });
   };
 });
+
+// example.controller("ExampleController", function($scope) {
+//
+// });
+
+// module.controller('MyCtrl', function($scope, $cordovaSQLite) {
+//
+//   var db = $cordovaSQLite.openDB({ name: "my.db" });
+//
+//   // for opening a background db:
+//   var db = $cordovaSQLite.openDB({ name: "my.db", bgType: 1 });
+//
+//   $scope.execute = function() {
+//     var query = "INSERT INTO test_table (data, data_num) VALUES (?,?)";
+//     $cordovaSQLite.execute(db, query, ["test", 100]).then(function(res) {
+//       console.log("insertId: " + res.insertId);
+//     }, function (err) {
+//       console.error(err);
+//     });
+//   };
+//
+// });
 
