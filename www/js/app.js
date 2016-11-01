@@ -3,11 +3,18 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-// var db = null;
+Date.prototype.toStringDB = function() {
+  var mes = this.getMonth() + 1;
+  var dia = this.getDate();
+  var hora = this.toTimeString().split(' ')[0];
+  return [this.getFullYear() + '-', !mes[1] && '0', mes + '-', !dia[1] && '0', dia, ' ',hora].join('');
+};
+
+var db = null;
 
 angular.module('starter', ['ionic', 'ngCordova'])
 
-.run(function($ionicPlatform /*, $cordovaSQLite */) {
+.run(function($ionicPlatform , $cordovaSQLite) {
   $ionicPlatform.ready(function() {
     if(window.cordova && window.cordova.plugins.Keyboard) {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -22,7 +29,17 @@ angular.module('starter', ['ionic', 'ngCordova'])
     if(window.StatusBar) {
       StatusBar.styleDefault();
     }
-    // db = $cordovaSQLite.openDB({nome:"my.db"});
+    db = $cordovaSQLite.openDB({name:"app.db", location: 2, createFromLocation: 1});
+    $cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS user (id INTEGER PRIMARY KEY, username TEXT NOT NULL, email TEXT, name TEXT, created_at TEXT NOT NULL, updated_at TEXT NOT NULL, active INTEGER NOT NULL, unique(username))")
+        .then(function (result) {}, function (error){});
+
+    $cordovaSQLite.execute(db, "SELECT id FROM user WHERE active = 1 LIMIT 1")
+        .then(function (result) {
+          if (result.rows.length === 0) {
+            $cordovaSQLite.execute(db, "INSERT INTO user (name, username, active, created_at, updated_at) VALUES ('', 'user1', 1, ?, ?)", [DatetimeNow, DatetimeNow])
+                .then(function (result) {}, function (error){});
+          }
+        }, function (error){});
   });
 })
 
@@ -33,30 +50,20 @@ angular.module('starter', ['ionic', 'ngCordova'])
 
     $cordovaCapture.captureVideo(options).then(function(videoData){
     },function(err){
-
     });
   };
+})
+
+.controller('myScore',function($scope, $ionicPlatform, $cordovaSQLite, $cordovaCapture) {
+  var DatetimeNow = new Date().toStringDB();
+  $scope.insertScore = function() {
+    if (!window.cordova) return; // Se for navegador ignorar sqlite transactions
+    if (VideoData !== "0") {
+      var query = "INSERT INTO score (user_id, active, maxscore, score, created_at, updated_at) VALUES (1, 1, ?, ?, ?, ?)";
+      $cordovaSQLite.execute(db, query, [maxscore, score, DatetimeNow, DatetimeNow])
+          .then(function(result) {}, function(error) {});
+    }
+  }
 });
-
-// example.controller("ExampleController", function($scope) {
-//
-// });
-
-// module.controller('MyCtrl', function($scope, $cordovaSQLite) {
-//
-//   var db = $cordovaSQLite.openDB({ name: "my.db" });
-//
-//   // for opening a background db:
-//   var db = $cordovaSQLite.openDB({ name: "my.db", bgType: 1 });
-//
-//   $scope.execute = function() {
-//     var query = "INSERT INTO test_table (data, data_num) VALUES (?,?)";
-//     $cordovaSQLite.execute(db, query, ["test", 100]).then(function(res) {
-//       console.log("insertId: " + res.insertId);
-//     }, function (err) {
-//       console.error(err);
-//     });
-//   };
-//
-// });
-
+$window.angularControllerInsertScore = $scope.insertScore;
+$window.angularControllerUpdateConfig = $scope.updateConfig;

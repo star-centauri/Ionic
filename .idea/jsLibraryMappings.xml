@@ -3,5 +3,6 @@
   <component name="JavaScriptLibraryMappings">
     <file url="file://$PROJECT_DIR$" libraries="{engraver/node_modules}" />
     <file url="file://$PROJECT_DIR$/platforms/android/cordova" libraries="{engraver/platforms/android/cordova/node_modules}" />
+    <file url="file://$PROJECT_DIR$/plugins/cordova-sqlite-storage" libraries="{engraver/plugins/cordova-sqlite-storage/node_modules}" />
   </component>
 </project>
